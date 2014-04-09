@@ -1,4 +1,4 @@
 omnium
 ======
 
-A mixed collection of useful utility classes.
+A mixed bag of useful utility classes.
