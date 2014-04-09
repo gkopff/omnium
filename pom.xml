@@ -33,7 +33,7 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>ominium</name>
+  <name>omnium</name>
   <description>A mixed bag of utility classes.</description>
   <url>https://github.com/gkopff/omnium</url>
 

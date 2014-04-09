@@ -50,7 +50,7 @@ public class LoggingThread extends Thread
 
     this.log = Preconditions.checkNotNull(log, "log cannot be null");
 
-    setUncaughtExceptionHandler(new UncaughtExceptionHandler()
+    this.setUncaughtExceptionHandler(new UncaughtExceptionHandler()
     {
       @Override
       public void uncaughtException(Thread t, Throwable e)
