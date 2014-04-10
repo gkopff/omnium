@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-package com.fatboyindustrial.omnium;
+package com.fatboyindustrial.omnium.thread;
 
 import com.google.common.base.Optional;
 import org.junit.Test;
