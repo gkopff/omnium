@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/omnium.iml" filepath="$PROJECT_DIR$/omnium.iml" />
       <module fileurl="file://$PROJECT_DIR$/omnium-core/omnium-core.iml" filepath="$PROJECT_DIR$/omnium-core/omnium-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/omnium-test/omnium-test.iml" filepath="$PROJECT_DIR$/omnium-test/omnium-test.iml" />
     </modules>
   </component>
 </project>

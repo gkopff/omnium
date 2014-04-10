@@ -23,11 +23,13 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="omnium-core" />
+        <module name="omnium-test" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="omnium" target="1.8" />
       <module name="omnium-core" target="1.8" />
+      <module name="omnium-test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

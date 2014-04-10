@@ -39,6 +39,7 @@
 
   <modules>
     <module>omnium-core</module>
+    <module>omnium-test</module>
   </modules>
 
   <licenses>
