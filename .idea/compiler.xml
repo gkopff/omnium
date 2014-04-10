@@ -22,11 +22,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="omnium" />
+        <module name="omnium-core" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="omnium" target="1.8" />
+      <module name="omnium-core" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
