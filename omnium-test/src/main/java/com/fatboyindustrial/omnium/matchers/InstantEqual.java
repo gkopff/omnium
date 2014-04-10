@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-package com.fatboyindustrial.omnium;
+package com.fatboyindustrial.omnium.matchers;
 
 import com.google.common.base.Preconditions;
 import org.hamcrest.BaseMatcher;
