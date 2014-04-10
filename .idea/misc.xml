@@ -3,6 +3,7 @@
   <component name="EntryPointsManager">
     <entry_points version="2.0">
       <entry_point TYPE="method" FQNAME="com.fatboyindustrial.omnium.LoggingThread LoggingThread(java.lang.String threadName, org.slf4j.Logger log, java.lang.Runnable target)" />
+      <entry_point TYPE="method" FQNAME="com.fatboyindustrial.omnium.PerpetualThread PerpetualThread(java.lang.String threadName, org.slf4j.Logger log, java.lang.Runnable target)" />
     </entry_points>
   </component>
   <component name="MavenProjectsManager">
