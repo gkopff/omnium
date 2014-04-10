@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/omnium.iml" filepath="$PROJECT_DIR$/omnium.iml" />
+      <module fileurl="file://$PROJECT_DIR$/omnium-core/omnium-core.iml" filepath="$PROJECT_DIR$/omnium-core/omnium-core.iml" />
     </modules>
   </component>
 </project>
