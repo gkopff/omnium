@@ -66,8 +66,8 @@ public class InstantEqual extends BaseMatcher<ReadableInstant> implements Matche
   }
 
   /**
-   * Evaluates the matcher for argument <var>item</var>.
-   * <p/>
+   * Evaluates the matcher for argument <var>item</var>. <p>
+   * 
    * This method matches against Object, instead of the generic type T. This is
    * because the caller of the Matcher does not know at runtime what the type is
    * (because of type erasure with Java generics). It is down to the implementations

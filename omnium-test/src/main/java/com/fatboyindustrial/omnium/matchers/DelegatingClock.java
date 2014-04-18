@@ -31,10 +31,10 @@ import java.time.Instant;
 import java.time.ZoneId;
 
 /**
- * A {@link Clock} implementation that delegates to an underlying clock. <p/>
+ * A {@link Clock} implementation that delegates to an underlying clock. <p>
  *
- * This is most useful to use with {@link Clock.FixedClock}, by changing the fixed clock source
- * underneath. <p/>
+ * This is most useful to use with {@code FixedClock}, by changing the fixed clock source
+ * underneath. <p>
  *
  * This class is final and thread-safe; however despite the JDK requirements, it is not immutable
  * since the delegate can be changed (albeit in a thread-safe way).
@@ -64,7 +64,7 @@ public final class DelegatingClock extends Clock
   }
 
   /**
-   * Gets the time-zone being used to create dates and times. <p/>
+   * Gets the time-zone being used to create dates and times. <p>
    *
    * A clock will typically obtain the current instant and then convert that
    * to a date or time using a time-zone. This method returns the time-zone used.
@@ -78,7 +78,7 @@ public final class DelegatingClock extends Clock
   }
 
   /**
-   * Returns a copy of this clock with a different time-zone. <p/>
+   * Returns a copy of this clock with a different time-zone. <p>
    *
    * A clock will typically obtain the current instant and then convert that
    * to a date or time using a time-zone. This method returns a clock with
@@ -94,7 +94,7 @@ public final class DelegatingClock extends Clock
   }
 
   /**
-   * Gets the current instant of the clock. <p/>
+   * Gets the current instant of the clock. <p>
    *
    * This returns an instant representing the current instant as defined by the clock.
    *
