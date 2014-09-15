@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-package com.fatboyindustrial.omnium.matchers;
+package com.fatboyindustrial.omnium;
 
 import com.google.common.base.Preconditions;
 
