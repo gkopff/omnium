@@ -52,6 +52,7 @@
   <scm>
     <url>https://github.com/gkopff/omnium</url>
     <connection>scm:git:https://github.com/gkopff/omnium.git</connection>
+    <developerConnection>scm:git:git@github.com:gkopff/omnium.git</developerConnection>
   </scm>
 
   <developers>
