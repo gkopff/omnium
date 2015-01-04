@@ -25,6 +25,7 @@ package com.fatboyindustrial.omnium;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.stream.Collector;
@@ -63,6 +64,22 @@ public class ImmutableCollectors
         (set, entry) -> set.add(entry),
         (builder1, builder2) -> builder1.addAll(builder2.build()),
         ImmutableSet.Builder::build,
+        UNORDERED);
+  }
+
+  /**
+   * Gets a collector that returns an {@link ImmutableSortedSet}.
+   * @param <T> The type of element in the set.
+   * @return The collector.
+   */
+  public static <T extends Comparable<T>>
+  Collector<T, ImmutableSortedSet.Builder<T>, ImmutableSortedSet<T>> toImmutableSortedSet()
+  {
+    return Collector.of(
+        ImmutableSortedSet::naturalOrder,
+        (set, entry) -> set.add(entry),
+        (builder1, builder2) -> builder1.addAll(builder2.build()),
+        ImmutableSortedSet.Builder::build,
         UNORDERED);
   }
 }
