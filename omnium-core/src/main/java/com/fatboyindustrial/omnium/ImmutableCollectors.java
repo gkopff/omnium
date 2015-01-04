@@ -24,9 +24,12 @@
 package com.fatboyindustrial.omnium;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.stream.Collector;
+
+import static java.util.stream.Collector.Characteristics.UNORDERED;
 
 /**
  * A set of collectors that return Guava immutable collections.
@@ -46,5 +49,20 @@ public class ImmutableCollectors
         (list, entry) -> list.add(entry),
         (builder1, builder2) -> builder1.addAll(builder2.build()),
         ImmutableList.Builder::build);
+  }
+
+  /**
+   * Gets a collector that returns an {@link ImmutableSet}.
+   * @param <T> The type of element in the set.
+   * @return The collector.
+   */
+  public static <T> Collector<T, ImmutableSet.Builder<T>, ImmutableSet<T>> toImmutableSet()
+  {
+    return Collector.of(
+        ImmutableSet::builder,
+        (set, entry) -> set.add(entry),
+        (builder1, builder2) -> builder1.addAll(builder2.build()),
+        ImmutableSet.Builder::build,
+        UNORDERED);
   }
 }
