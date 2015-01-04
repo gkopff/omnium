@@ -23,8 +23,9 @@
 
 package com.fatboyindustrial.omnium;
 
-import com.google.common.base.Optional;
 import org.junit.Test;
+
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -40,7 +41,7 @@ public class EitherTest
   @Test(expected =  NullPointerException.class)
   public void testPreconditionsNullValue()
   {
-    new Either<String, String>(null, Optional.<String>absent());
+    new Either<String, String>(null, Optional.<String>empty());
   }
 
   /**
@@ -49,7 +50,7 @@ public class EitherTest
   @Test(expected =  NullPointerException.class)
   public void testPreconditionsNullError()
   {
-    new Either<String, String>(Optional.<String>absent(), null);
+    new Either<String, String>(Optional.<String>empty(), null);
   }
 
   /**
@@ -67,7 +68,7 @@ public class EitherTest
   @Test(expected =  IllegalArgumentException.class)
   public void testPreconditionsBothAbsent()
   {
-    new Either<>(Optional.<String>absent(), Optional.<String>absent());
+    new Either<>(Optional.<String>empty(), Optional.<String>empty());
   }
 
   /**
