@@ -102,11 +102,11 @@ public class Times
     {
       final int minutes = minutes(duration);
       final int seconds = seconds(duration.minus(minutes, ChronoUnit.MINUTES));
-      narrative = format("minute", minutes, seconds / 60f);
+      narrative = format("min", minutes, seconds / 60f);
     }
     else if (seconds(duration) > 0)
     {
-      narrative = format("second", seconds(duration), 0f);           // we don't care about half a second
+      narrative = format("sec", seconds(duration), 0f);           // we don't care about half a second
     }
     else
     {
