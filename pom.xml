@@ -194,7 +194,7 @@
     <dependency>                               <!-- Guava -->
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>10.0.1</version>
+      <version>18.0</version>
     </dependency>
     <dependency>                               <!-- Defect annotations -->
       <groupId>com.google.code.findbugs</groupId>
