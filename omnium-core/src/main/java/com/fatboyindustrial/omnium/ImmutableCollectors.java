@@ -26,6 +26,7 @@ package com.fatboyindustrial.omnium;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
 
 import javax.annotation.concurrent.Immutable;
@@ -103,6 +104,28 @@ public class ImmutableCollectors
         (map, entry) -> map.put(keyMapper.apply(entry), valueMapper.apply(entry)),
         (builder1, builder2) -> builder1.putAll(builder2.build()),
         ImmutableMap.Builder::build,
+        UNORDERED);
+  }
+
+  /**
+   * Gets a collector that returns an {@link ImmutableSortedMap}.
+   * @param <T> The original element type.
+   * @param <K> The key type.
+   * @param <V> The value type.
+   * @param keyMapper Function to transform {@code T} to {@code K}.
+   * @param valueMapper Function to transform {@code T} to {@code V}.
+   * @return The collector.
+   */
+  public static <T, K extends Comparable<K>, V>
+  Collector<T, ImmutableSortedMap.Builder<K, V>, ImmutableSortedMap<K, V>> toImmutableSortedMap(
+      final Function<? super T, ? extends K> keyMapper,
+      final Function<? super T, ? extends V> valueMapper)
+  {
+    return Collector.of(
+        ImmutableSortedMap::naturalOrder,
+        (map, entry) -> map.put(keyMapper.apply(entry), valueMapper.apply(entry)),
+        (builder1, builder2) -> builder1.putAll(builder2.build()),
+        ImmutableSortedMap.Builder::build,
         UNORDERED);
   }
 }
