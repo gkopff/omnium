@@ -24,10 +24,12 @@
 package com.fatboyindustrial.omnium;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 
 import javax.annotation.concurrent.Immutable;
+import java.util.function.Function;
 import java.util.stream.Collector;
 
 import static java.util.stream.Collector.Characteristics.UNORDERED;
@@ -80,6 +82,27 @@ public class ImmutableCollectors
         (set, entry) -> set.add(entry),
         (builder1, builder2) -> builder1.addAll(builder2.build()),
         ImmutableSortedSet.Builder::build,
+        UNORDERED);
+  }
+
+  /**
+   * Gets a collector that returns an {@link ImmutableMap}.
+   * @param <T> The original element type.
+   * @param <K> The key type.
+   * @param <V> The value type.
+   * @param keyMapper Function to transform {@code T} to {@code K}.
+   * @param valueMapper Function to transform {@code T} to {@code V}.
+   * @return The collector.
+   */
+  public static <T, K, V> Collector<T, ImmutableMap.Builder<K, V>, ImmutableMap<K, V>> toImmutableMap(
+      final Function<? super T, ? extends K> keyMapper,
+      final Function<? super T, ? extends V> valueMapper)
+  {
+    return Collector.of(
+        ImmutableMap::builder,
+        (map, entry) -> map.put(keyMapper.apply(entry), valueMapper.apply(entry)),
+        (builder1, builder2) -> builder1.putAll(builder2.build()),
+        ImmutableMap.Builder::build,
         UNORDERED);
   }
 }
