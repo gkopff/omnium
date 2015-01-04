@@ -53,28 +53,28 @@ public class TimesTest
     assertThat(fromNow(clock, now.minusMillis(1)), is("1 ms ago"));
     assertThat(fromNow(clock, now.minusMillis(2)), is("2 ms ago"));
     assertThat(fromNow(clock, now.minusMillis(999)), is("999 ms ago"));
-    assertThat(fromNow(clock, now.minusMillis(1000)), is("1 second ago"));
-    assertThat(fromNow(clock, now.minusMillis(1001)), is("1 second ago"));
-    assertThat(fromNow(clock, now.minusMillis(1999)), is("1 second ago"));
-    assertThat(fromNow(clock, now.minusMillis(2000)), is("2 seconds ago"));
-    assertThat(fromNow(clock, now.minusMillis(2001)), is("2 seconds ago"));
-    assertThat(fromNow(clock, now.minusMillis(2999)), is("2 seconds ago"));
+    assertThat(fromNow(clock, now.minusMillis(1000)), is("1 sec ago"));
+    assertThat(fromNow(clock, now.minusMillis(1001)), is("1 sec ago"));
+    assertThat(fromNow(clock, now.minusMillis(1999)), is("1 sec ago"));
+    assertThat(fromNow(clock, now.minusMillis(2000)), is("2 secs ago"));
+    assertThat(fromNow(clock, now.minusMillis(2001)), is("2 secs ago"));
+    assertThat(fromNow(clock, now.minusMillis(2999)), is("2 secs ago"));
 
-    assertThat(fromNow(clock, now.minusSeconds(59)), is("59 seconds ago"));
-    assertThat(fromNow(clock, now.minusSeconds(60)), is("1 minute ago"));
-    assertThat(fromNow(clock, now.minusSeconds(119)), is("2 minutes ago"));
-    assertThat(fromNow(clock, now.minusSeconds(120)), is("2 minutes ago"));
+    assertThat(fromNow(clock, now.minusSeconds(59)), is("59 secs ago"));
+    assertThat(fromNow(clock, now.minusSeconds(60)), is("1 min ago"));
+    assertThat(fromNow(clock, now.minusSeconds(119)), is("2 mins ago"));
+    assertThat(fromNow(clock, now.minusSeconds(120)), is("2 mins ago"));
 
-    assertThat(fromNow(clock, now.minus(2, ChronoUnit.MINUTES)), is("2 minutes ago"));
-    assertThat(fromNow(clock, now.minus(140, ChronoUnit.SECONDS)), is("2½ minutes ago"));
-    assertThat(fromNow(clock, now.minus(150, ChronoUnit.SECONDS)), is("2½ minutes ago"));
-    assertThat(fromNow(clock, now.minus(166, ChronoUnit.SECONDS)), is("3 minutes ago"));
-    assertThat(fromNow(clock, now.minus(180, ChronoUnit.SECONDS)), is("3 minutes ago"));
-    assertThat(fromNow(clock, now.minus(195, ChronoUnit.SECONDS)), is("3 minutes ago"));
+    assertThat(fromNow(clock, now.minus(2, ChronoUnit.MINUTES)), is("2 mins ago"));
+    assertThat(fromNow(clock, now.minus(140, ChronoUnit.SECONDS)), is("2½ mins ago"));
+    assertThat(fromNow(clock, now.minus(150, ChronoUnit.SECONDS)), is("2½ mins ago"));
+    assertThat(fromNow(clock, now.minus(166, ChronoUnit.SECONDS)), is("3 mins ago"));
+    assertThat(fromNow(clock, now.minus(180, ChronoUnit.SECONDS)), is("3 mins ago"));
+    assertThat(fromNow(clock, now.minus(195, ChronoUnit.SECONDS)), is("3 mins ago"));
 
-    assertThat(fromNow(clock, now.minus(15, ChronoUnit.MINUTES)), is("15 minutes ago"));
-    assertThat(fromNow(clock, now.minus(30, ChronoUnit.MINUTES)), is("30 minutes ago"));
-    assertThat(fromNow(clock, now.minus(45, ChronoUnit.MINUTES)), is("45 minutes ago"));
+    assertThat(fromNow(clock, now.minus(15, ChronoUnit.MINUTES)), is("15 mins ago"));
+    assertThat(fromNow(clock, now.minus(30, ChronoUnit.MINUTES)), is("30 mins ago"));
+    assertThat(fromNow(clock, now.minus(45, ChronoUnit.MINUTES)), is("45 mins ago"));
 
     assertThat(fromNow(clock, now.minus(60, ChronoUnit.MINUTES)), is("1 hour ago"));
     assertThat(fromNow(clock, now.minus(140, ChronoUnit.MINUTES)), is("2½ hours ago"));
@@ -95,28 +95,28 @@ public class TimesTest
     assertThat(fromNow(clock, now.plusMillis(1)), is("in 1 ms"));
     assertThat(fromNow(clock, now.plusMillis(2)), is("in 2 ms"));
     assertThat(fromNow(clock, now.plusMillis(999)), is("in 999 ms"));
-    assertThat(fromNow(clock, now.plusMillis(1000)), is("in 1 second"));
-    assertThat(fromNow(clock, now.plusMillis(1001)), is("in 1 second"));
-    assertThat(fromNow(clock, now.plusMillis(1999)), is("in 1 second"));
-    assertThat(fromNow(clock, now.plusMillis(2000)), is("in 2 seconds"));
-    assertThat(fromNow(clock, now.plusMillis(2001)), is("in 2 seconds"));
-    assertThat(fromNow(clock, now.plusMillis(2999)), is("in 2 seconds"));
+    assertThat(fromNow(clock, now.plusMillis(1000)), is("in 1 sec"));
+    assertThat(fromNow(clock, now.plusMillis(1001)), is("in 1 sec"));
+    assertThat(fromNow(clock, now.plusMillis(1999)), is("in 1 sec"));
+    assertThat(fromNow(clock, now.plusMillis(2000)), is("in 2 secs"));
+    assertThat(fromNow(clock, now.plusMillis(2001)), is("in 2 secs"));
+    assertThat(fromNow(clock, now.plusMillis(2999)), is("in 2 secs"));
 
-    assertThat(fromNow(clock, now.plusSeconds(59)), is("in 59 seconds"));
-    assertThat(fromNow(clock, now.plusSeconds(60)), is("in 1 minute"));
-    assertThat(fromNow(clock, now.plusSeconds(119)), is("in 2 minutes"));
-    assertThat(fromNow(clock, now.plusSeconds(120)), is("in 2 minutes"));
+    assertThat(fromNow(clock, now.plusSeconds(59)), is("in 59 secs"));
+    assertThat(fromNow(clock, now.plusSeconds(60)), is("in 1 min"));
+    assertThat(fromNow(clock, now.plusSeconds(119)), is("in 2 mins"));
+    assertThat(fromNow(clock, now.plusSeconds(120)), is("in 2 mins"));
 
-    assertThat(fromNow(clock, now.plus(2, ChronoUnit.MINUTES)), is("in 2 minutes"));
-    assertThat(fromNow(clock, now.plus(140, ChronoUnit.SECONDS)), is("in 2½ minutes"));
-    assertThat(fromNow(clock, now.plus(150, ChronoUnit.SECONDS)), is("in 2½ minutes"));
-    assertThat(fromNow(clock, now.plus(166, ChronoUnit.SECONDS)), is("in 3 minutes"));
-    assertThat(fromNow(clock, now.plus(180, ChronoUnit.SECONDS)), is("in 3 minutes"));
-    assertThat(fromNow(clock, now.plus(195, ChronoUnit.SECONDS)), is("in 3 minutes"));
+    assertThat(fromNow(clock, now.plus(2, ChronoUnit.MINUTES)), is("in 2 mins"));
+    assertThat(fromNow(clock, now.plus(140, ChronoUnit.SECONDS)), is("in 2½ mins"));
+    assertThat(fromNow(clock, now.plus(150, ChronoUnit.SECONDS)), is("in 2½ mins"));
+    assertThat(fromNow(clock, now.plus(166, ChronoUnit.SECONDS)), is("in 3 mins"));
+    assertThat(fromNow(clock, now.plus(180, ChronoUnit.SECONDS)), is("in 3 mins"));
+    assertThat(fromNow(clock, now.plus(195, ChronoUnit.SECONDS)), is("in 3 mins"));
 
-    assertThat(fromNow(clock, now.plus(15, ChronoUnit.MINUTES)), is("in 15 minutes"));
-    assertThat(fromNow(clock, now.plus(30, ChronoUnit.MINUTES)), is("in 30 minutes"));
-    assertThat(fromNow(clock, now.plus(45, ChronoUnit.MINUTES)), is("in 45 minutes"));
+    assertThat(fromNow(clock, now.plus(15, ChronoUnit.MINUTES)), is("in 15 mins"));
+    assertThat(fromNow(clock, now.plus(30, ChronoUnit.MINUTES)), is("in 30 mins"));
+    assertThat(fromNow(clock, now.plus(45, ChronoUnit.MINUTES)), is("in 45 mins"));
 
     assertThat(fromNow(clock, now.plus(60, ChronoUnit.MINUTES)), is("in 1 hour"));
     assertThat(fromNow(clock, now.plus(140, ChronoUnit.MINUTES)), is("in 2½ hours"));
