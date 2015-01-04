@@ -30,6 +30,8 @@ import org.junit.Test;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
+import static com.fatboyindustrial.omnium.ImmutableCollectors.asKeyToImmutableMap;
+import static com.fatboyindustrial.omnium.ImmutableCollectors.asValueToImmutableMap;
 import static com.fatboyindustrial.omnium.ImmutableCollectors.toImmutableMap;
 import static java.util.stream.Collector.Characteristics.UNORDERED;
 import static org.hamcrest.Matchers.is;
@@ -154,5 +156,39 @@ public class ImmutableCollectorsImmutableMapTest
             "TWO", 3,
             "THREE", 5,
             "FOUR", 4)));
+  }
+
+  /**
+   * Tests that use with a stream works as expected, using the stream value as the map key.
+   */
+  @Test
+  public void testStreamUsingKey()
+  {
+    final Stream<String> stream = Stream.of("one", "two", "three", "four");
+
+    assertThat(
+        stream.collect(asKeyToImmutableMap(String::length)),
+        is(ImmutableMap.of(
+            "one", 3,
+            "two", 3,
+            "three", 5,
+            "four", 4)));
+  }
+
+  /**
+   * Tests that use with a stream works as expected, using the stream value as the map value.
+   */
+  @Test
+  public void testStreamUsingValue()
+  {
+    final Stream<String> stream = Stream.of("one", "two", "three", "four");
+
+    assertThat(
+        stream.collect(asValueToImmutableMap(String::toUpperCase)),
+        is(ImmutableMap.of(
+            "ONE", "one",
+            "TWO", "two",
+            "THREE", "three",
+            "FOUR", "four")));
   }
 }

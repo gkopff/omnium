@@ -122,6 +122,20 @@ public class ImmutableCollectors
   }
 
   /**
+   * Gets a collector that returns an {@link ImmutableMap}, with the stream element used as the value,
+   * and the key computed using the supplied key mapper.
+   * @param <T> The original element type.
+   * @param <K> The key type.
+   * @param keyMapper Function to transform {@code T} to {@code K}.
+   * @return The collector.
+   */
+  public static <T, K> Collector<T, ImmutableMap.Builder<K, T>, ImmutableMap<K, T>> asValueToImmutableMap(
+      final Function<? super T, ? extends K> keyMapper)
+  {
+    return toImmutableMap(keyMapper, Function.identity());
+  }
+
+  /**
    * Gets a collector that returns an {@link ImmutableSortedMap}.
    * @param <T> The original element type.
    * @param <K> The key type.
