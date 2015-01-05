@@ -23,7 +23,6 @@
 
 package com.fatboyindustrial.omnium.thread;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 
@@ -31,6 +30,7 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -51,7 +51,7 @@ public class PerpetualThread extends Thread
    * @param log The logger to use.
    * @param target The runnable code block to execute.
    */
-  public PerpetualThread(String threadName, Logger log, Runnable target)
+  public PerpetualThread(final String threadName, final Logger log, final Runnable target)
   {
     super(Preconditions.checkNotNull(target, "target cannot be null"));
     this.setName(Preconditions.checkNotNull(threadName, "threadName cannot be null"));
@@ -70,7 +70,7 @@ public class PerpetualThread extends Thread
    * @throws UnsupportedOperationException Perpetual threads cannot have custom uncaught exception handlers.
    */
   @Override
-  public final void setUncaughtExceptionHandler(UncaughtExceptionHandler eh)
+  public final void setUncaughtExceptionHandler(final UncaughtExceptionHandler eh)
   {
     throw new UnsupportedOperationException("Perpetual threads cannot have custom uncaught exception handlers");
   }
@@ -88,7 +88,7 @@ public class PerpetualThread extends Thread
 
     this.log.trace("run(): thread exited");
 
-    PerpetualThreadRegistry.get().addObituary(this, Optional.absent());
+    PerpetualThreadRegistry.get().addObituary(this, Optional.empty());
   }
 
   /**
@@ -125,13 +125,13 @@ public class PerpetualThread extends Thread
     /**
      * Gets the details of the dead threads as a single string, suitable for reporting to a monitoring
      * interface.
-     * @return The obituaries, rendered as a String, or {@link Optional#absent()} if there are no deaths.
+     * @return The obituaries, rendered as a String, or {@link Optional#empty()} if there are no deaths.
      */
     public synchronized Optional<String> getNotice()
     {
       if (this.obituaries.isEmpty())
       {
-        return Optional.absent();
+        return Optional.empty();
       }
 
       //noinspection ThrowableResultOfMethodCallIgnored
@@ -147,7 +147,7 @@ public class PerpetualThread extends Thread
      * @param thread The thread that died.
      * @param throwable An optional exception that caused the death.
      */
-    private synchronized void addObituary(Thread thread, Optional<Throwable> throwable)
+    private synchronized void addObituary(final Thread thread, final Optional<Throwable> throwable)
     {
       this.obituaries.put(thread, throwable);
     }

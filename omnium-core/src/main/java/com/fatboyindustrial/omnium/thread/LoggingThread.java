@@ -43,15 +43,14 @@ public class LoggingThread extends Thread
    * @param log The logger to use.
    * @param target The runnable code block to execute.
    */
-  public LoggingThread(String threadName, Logger log, Runnable target)
+  public LoggingThread(final String threadName, final Logger log, final Runnable target)
   {
     super(Preconditions.checkNotNull(target, "target cannot be null"));
     this.setName(Preconditions.checkNotNull(threadName, "threadName cannot be null"));
 
     this.log = Preconditions.checkNotNull(log, "log cannot be null");
 
-    this.setUncaughtExceptionHandler(
-        (t, e) -> LoggingThread.this.log.warn("Uncaught exception in thread {}", t.getName(), e));
+    this.setUncaughtExceptionHandler(new LoggingUncaughtExceptionHandler(this.log));
   }
 
   /**
