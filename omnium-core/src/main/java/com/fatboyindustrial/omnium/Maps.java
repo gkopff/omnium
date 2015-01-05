@@ -111,6 +111,8 @@ public class Maps
    *
    * @param values The values to use when constructing the {@code Map}.
    * @param keyFunction The function used to produce the key for each value.
+   * @param <K> The key type.
+   * @param <V> The value type.
    * @return A map mapping the result of evaluating the function {@code keyFunction} on each value
    *         in the input collection to that value.
    * @throws IllegalArgumentException If {@code keyFunction} produces the same key for more than
@@ -125,6 +127,12 @@ public class Maps
   /**
    * Returns a view of a map where each value is transformed by a function. All
    * other properties of the map, such as iteration order, are left intact.
+   * @param fromMap The input map.
+   * @param function The transformation function to apply to the value.
+   * @param <K> The key type.
+   * @param <V1> The original value type.
+   * @param <V2> The new value type.
+   * @return A map with values transformed by the function.
    * @see com.google.common.collect.Maps#transformValues(Map, com.google.common.base.Function)
    */
   public static <K, V1, V2> Map<K, V2> transformValues(final Map<K, V1> fromMap,
