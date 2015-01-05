@@ -50,8 +50,7 @@ public class LoggingThread extends Thread
 
     this.log = Preconditions.checkNotNull(log, "log cannot be null");
 
-    this.setUncaughtExceptionHandler(
-        (t, e) -> LoggingThread.this.log.warn("Uncaught exception in thread {}", t.getName(), e));
+    this.setUncaughtExceptionHandler(new LoggingUncaughtExceptionHandler(this.log));
   }
 
   /**
