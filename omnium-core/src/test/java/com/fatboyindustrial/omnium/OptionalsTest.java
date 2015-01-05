@@ -26,9 +26,16 @@ package com.fatboyindustrial.omnium;
 import org.junit.Test;
 
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-import static com.fatboyindustrial.omnium.Optionals.absentOnException;
-import static com.fatboyindustrial.omnium.Optionals.flatAbsentOnException;
+import static com.fatboyindustrial.omnium.Optionals.tryCall;
+import static com.fatboyindustrial.omnium.Optionals.tryFlatCall;
+import static com.fatboyindustrial.omnium.Optionals.tryFlatInvoke;
+import static com.fatboyindustrial.omnium.Optionals.tryInvoke;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -41,81 +48,151 @@ public class OptionalsTest
    * Tests that present values are returned as present, and exceptions are returned as absent.
    */
   @Test
-  public void testAbsentOnExceptionSupplier()
+  public void testTryInvokeSupplier()
   {
-    final String absent = "garbage";
-    final String present = "22";
+    final String garbage = "garbage";
+    final String valid = "22";
 
-    assertThat(absentOnException(() -> Integer.parseInt(absent)), is(Optional.empty()));
-    assertThat(absentOnException(() -> Integer.parseInt(present)), is(Optional.of(22)));
-  }
-
-  /**
-   * Tests that present values are returned as present, and exceptions are returned as absent.
-   */
-  @SuppressWarnings("Convert2MethodRef")
-  @Test
-  public void testFlatAbsentOnExceptionSupplier()
-  {
-    final String absent = "garbage";
-    final String present = "22";
-
-    assertThat(flatAbsentOnException(() -> Optional.of(Integer.parseInt(absent))), is(Optional.empty()));
-    assertThat(flatAbsentOnException(() -> Optional.empty()), is(Optional.empty()));
-    assertThat(flatAbsentOnException(() -> Optional.of(Integer.parseInt(present))), is(Optional.of(22)));
+    assertThat(tryInvoke(() -> Integer.parseInt(garbage)), is(Optional.empty()));
+    assertThat(tryInvoke(() -> Integer.parseInt(valid)), is(Optional.of(22)));
   }
 
   /**
    * Tests that present values are returned as present, and exceptions are returned as absent.
    */
   @Test
-  public void testAbsentOnExceptionFunction()
+  public void testTryInvokeFunction()
   {
-    final String absent = "garbage";
-    final String present = "22";
+    final String garbage = "garbage";
+    final String valid = "22";
 
-    assertThat(absentOnException(Integer::parseInt, absent), is(Optional.empty()));
-    assertThat(absentOnException(Integer::parseInt, present), is(Optional.of(22)));
+    assertThat(tryInvoke(garbage, Integer::parseInt), is(Optional.empty()));
+    assertThat(tryInvoke(valid, Integer::parseInt), is(Optional.of(22)));
   }
 
   /**
    * Tests that present values are returned as present, and exceptions are returned as absent.
    */
   @Test
-  public void testFlatAbsentOnExceptionFunction()
+  public void testTryInvokeBiFunction()
   {
-    final String absent = "garbage";
-    final String present = "22";
+    final String garbage = "garbage";
+    final String valid = "22";
 
-    assertThat(flatAbsentOnException(str -> Optional.of(Integer.parseInt(str)), absent), is(Optional.empty()));
-    assertThat(flatAbsentOnException(str -> Optional.empty(), present), is(Optional.empty()));
-    assertThat(flatAbsentOnException(str -> Optional.of(Integer.parseInt(str)), present), is(Optional.of(22)));
+    assertThat(tryInvoke(garbage, 16, Integer::parseInt), is(Optional.empty()));
+    assertThat(tryInvoke(valid, 16, Integer::parseInt), is(Optional.of(0x22)));
   }
 
   /**
    * Tests that present values are returned as present, and exceptions are returned as absent.
    */
   @Test
-  public void testAbsentOnExceptionBiFunction()
+  public void testTryCall()
   {
-    final String absent = "garbage";
-    final String present = "22";
+    final String garbage = "garbage";
+    final String valid = "java.lang.String";
 
-    assertThat(absentOnException(Integer::parseInt, absent, 16), is(Optional.empty()));
-    assertThat(absentOnException(Integer::parseInt, present, 16), is(Optional.of(0x22)));
+    assertThat(tryCall(() -> Class.forName(garbage)), is(Optional.empty()));
+    assertThat(tryCall(() -> Class.forName(valid)), is(Optional.of(String.class)));
   }
 
   /**
-   * Tests that present values are returned as present, and exceptions are returned as absent.
+   * Tests that values are returned as-is, and exceptions are returned as absent.
    */
   @Test
-  public void testFlatAbsentOnExceptionBiFunction()
+  public void testTryFlatInvokeSupplier()
   {
-    final String absent = "garbage";
-    final String present = "22";
+    final Supplier<Optional<String>> returnsAbsent =
+        () -> Stream.of("one", "two")
+            .filter(str -> str.length() > 5)
+            .findAny();
 
-    assertThat(flatAbsentOnException((str, radix) -> Optional.of(Integer.parseInt(str, radix)), absent, 16), is(Optional.empty()));
-    assertThat(flatAbsentOnException((str, radix) -> Optional.empty(), present, 16), is(Optional.empty()));
-    assertThat(flatAbsentOnException((str, radix) -> Optional.of(Integer.parseInt(str, radix)), present, 16), is(Optional.of(0x22)));
+    final Supplier<Optional<String>> returnsValid =
+        () -> Stream.of("one", "two")
+            .filter(str -> str.equals("one"))
+            .findAny();
+
+    final Supplier<Optional<Integer>> throwsException =
+        () -> Stream.of("one", "two")
+            .map(Integer::parseInt)
+            .findFirst();
+
+    assertThat(tryFlatInvoke(returnsAbsent), is(Optional.empty()));
+    assertThat(tryFlatInvoke(throwsException), is(Optional.empty()));
+
+    assertThat(tryFlatInvoke(returnsValid), is(Optional.of("one")));
+  }
+
+  /**
+   * Tests that present values are returned as-is, and exceptions are returned as absent.
+   */
+  @Test
+  public void testTryFlatInvokeFunction()
+  {
+    final Function<Integer, Optional<String>> returnsAbsent =
+        arg -> Stream.of("one", "two")
+            .filter(str -> str.length() > arg)
+            .findAny();
+
+    final Function<Integer, Optional<String>> returnsValid =
+        arg -> Stream.of("one", "two")
+            .filter(str -> str.equals("one"))
+            .findAny();
+
+    final Function<Integer, Optional<Integer>> throwsException =
+        arg -> Stream.of("one", "two")
+            .map(Integer::parseInt)
+            .findFirst();
+
+    assertThat(tryFlatInvoke(5, returnsAbsent), is(Optional.empty()));
+    assertThat(tryFlatInvoke(5, throwsException), is(Optional.empty()));
+
+    assertThat(tryFlatInvoke(5, returnsValid), is(Optional.of("one")));
+  }
+
+  /**
+   * Tests that present values are returned as-is, and exceptions are returned as absent.
+   */
+  @Test
+  public void testTryFlatInvokeBiFunction()
+  {
+    final BiFunction<Integer, Integer, Optional<String>> returnsAbsent =
+        (arg1, arg2) -> Stream.of("one", "two")
+            .filter(str -> str.length() > arg1 + arg2)
+            .findAny();
+
+    final BiFunction<Integer, Integer, Optional<String>> returnsValid =
+        (arg1, arg2) -> Stream.of("one", "two")
+            .filter(str -> str.equals("one"))
+            .findAny();
+
+    final BiFunction<Integer, Integer, Optional<Integer>> throwsException =
+        (arg1, arg2) -> Stream.of("one", "two")
+            .map(Integer::parseInt)
+            .findFirst();
+
+    assertThat(tryFlatInvoke(2, 3, returnsAbsent), is(Optional.empty()));
+    assertThat(tryFlatInvoke(2, 3, throwsException), is(Optional.empty()));
+
+    assertThat(tryFlatInvoke(2, 3, returnsValid), is(Optional.of("one")));
+  }
+
+  /**
+   * Tests that values are returned as-is, and exceptions are returned as absent.
+   */
+  @Test
+  public void testTryFlatCall()
+  {
+    final String garbage = "garbage";
+    final String valid = "java.lang.String";
+
+    final Callable<Optional<Class<?>>> returnsAbsent = Optional::empty;
+    final Callable<Optional<Class<?>>> returnsValid = () -> Optional.of(Class.forName(valid));
+    final Callable<Optional<Class<?>>> throwsException = () -> Optional.of(Class.forName(garbage));
+
+    assertThat(tryFlatCall(returnsAbsent), is(Optional.empty()));
+    assertThat(tryFlatCall(throwsException), is(Optional.empty()));
+
+    assertThat(tryFlatCall(returnsValid), is(Optional.of(String.class)));
   }
 }
