@@ -28,6 +28,7 @@ import com.google.common.base.Preconditions;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Represents either a valid value, or an error condition.
@@ -124,5 +125,29 @@ public class Either<VALUE, ERROR>
     }
 
     return this.error.get();
+  }
+
+  /**
+   * If the value is present, then apply the provided mapping function to it, returning the result
+   * as a new {@code Either}.
+   * @param function The mapping function.
+   * @param <NEW_VALUE> The type of the new value.
+   * @return A new {@code Either}.
+   */
+  public <NEW_VALUE> Either<NEW_VALUE, ERROR> mapValue(final Function<VALUE, NEW_VALUE> function)
+  {
+    return new Either<>(this.value.map(function), this.error);
+  }
+
+  /**
+   * If the error is present, then apply the provided mapping function to it, returning the result
+   * as a new {@code Either}.
+   * @param function The mapping function.
+   * @param <NEW_ERROR> The type of the new error.
+   * @return A new {@code Either}.
+   */
+  public <NEW_ERROR> Either<VALUE, NEW_ERROR> mapError(final Function<ERROR, NEW_ERROR> function)
+  {
+    return new Either<>(this.value, this.error.map(function));
   }
 }
