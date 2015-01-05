@@ -66,11 +66,11 @@ public class PerpetualThread extends Thread
 
   /**
    * Sets the uncaught exception handler for this thread.
-   * @param handler The handler
+   * @param eh The handler
    * @throws UnsupportedOperationException Perpetual threads cannot have custom uncaught exception handlers.
    */
   @Override
-  public final void setUncaughtExceptionHandler(UncaughtExceptionHandler handler)
+  public final void setUncaughtExceptionHandler(UncaughtExceptionHandler eh)
   {
     throw new UnsupportedOperationException("Perpetual threads cannot have custom uncaught exception handlers");
   }
