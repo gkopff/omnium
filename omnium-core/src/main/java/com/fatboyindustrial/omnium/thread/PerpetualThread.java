@@ -23,7 +23,6 @@
 
 package com.fatboyindustrial.omnium.thread;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 
@@ -31,6 +30,7 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -88,7 +88,7 @@ public class PerpetualThread extends Thread
 
     this.log.trace("run(): thread exited");
 
-    PerpetualThreadRegistry.get().addObituary(this, Optional.absent());
+    PerpetualThreadRegistry.get().addObituary(this, Optional.empty());
   }
 
   /**
@@ -125,13 +125,13 @@ public class PerpetualThread extends Thread
     /**
      * Gets the details of the dead threads as a single string, suitable for reporting to a monitoring
      * interface.
-     * @return The obituaries, rendered as a String, or {@link Optional#absent()} if there are no deaths.
+     * @return The obituaries, rendered as a String, or {@link Optional#empty()} if there are no deaths.
      */
     public synchronized Optional<String> getNotice()
     {
       if (this.obituaries.isEmpty())
       {
-        return Optional.absent();
+        return Optional.empty();
       }
 
       //noinspection ThrowableResultOfMethodCallIgnored
