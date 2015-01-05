@@ -23,8 +23,9 @@
 
 package com.fatboyindustrial.omnium;
 
-import com.google.common.base.Optional;
 import org.junit.Test;
+
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -40,7 +41,7 @@ public class EitherTest
   @Test(expected =  NullPointerException.class)
   public void testPreconditionsNullValue()
   {
-    new Either<String, String>(null, Optional.<String>absent());
+    new Either<String, String>(null, Optional.<String>empty());
   }
 
   /**
@@ -49,7 +50,7 @@ public class EitherTest
   @Test(expected =  NullPointerException.class)
   public void testPreconditionsNullError()
   {
-    new Either<String, String>(Optional.<String>absent(), null);
+    new Either<String, String>(Optional.<String>empty(), null);
   }
 
   /**
@@ -67,7 +68,7 @@ public class EitherTest
   @Test(expected =  IllegalArgumentException.class)
   public void testPreconditionsBothAbsent()
   {
-    new Either<>(Optional.<String>absent(), Optional.<String>absent());
+    new Either<>(Optional.<String>empty(), Optional.<String>empty());
   }
 
   /**
@@ -110,5 +111,73 @@ public class EitherTest
   public void testExceptionValuePresentGetError()
   {
     Either.value("value").getError();
+  }
+
+  /**
+   * Tests that the value mapping forms a new, valid Either and that the original Either is unchanged
+   * in the case that the Either contains a value (not an error).
+   */
+  @Test
+  public void testMapValuePresent()
+  {
+    final Either<String, Integer> original = Either.value("Space Cookies!");
+    final Either<Character, Integer> transformed = original.mapValue(str -> str.charAt(0));
+
+    assertThat(original.isError(), is(false));
+    assertThat(original.getValue(), is("Space Cookies!"));
+
+    assertThat(transformed.isError(), is(false));
+    assertThat(transformed.getValue(), is('S'));
+  }
+
+  /**
+   * Tests that the value mapping forms a new, valid Either and that the original Either is unchanged
+   * in the case that the Either does not contain a value (rather, it contains an error).
+   */
+  @Test
+  public void testMapValueAbsent()
+  {
+    final Either<String, Integer> original = Either.error(500);
+    final Either<Character, Integer> transformed = original.mapValue(str -> str.charAt(0));
+
+    assertThat(original.isError(), is(true));
+    assertThat(original.getError(), is(500));
+
+    assertThat(transformed.isError(), is(true));
+    assertThat(transformed.getError(), is(500));
+  }
+
+  /**
+   * Tests that the error mapping forms a new, valid Either and that the original Either is unchanged
+   * in the case that the Either contains an error (not a value).
+   */
+  @Test
+  public void testMapErrorPresent()
+  {
+    final Either<String, Integer> original = Either.error(500);
+    final Either<String, String> transformed = original.mapError(String::valueOf);
+
+    assertThat(original.isError(), is(true));
+    assertThat(original.getError(), is(500));
+
+    assertThat(transformed.isError(), is(true));
+    assertThat(transformed.getError(), is("500"));
+  }
+
+  /**
+   * Tests that the error mapping forms a new, valid Either and that the original Either is unchanged
+   * in the case that the Either does not contain an error (rather, it contains a value).
+   */
+  @Test
+  public void testMapErrorAbsent()
+  {
+    final Either<String, Integer> original = Either.value("Space Cookies!");
+    final Either<String, String> transformed = original.mapError(String::valueOf);
+
+    assertThat(original.isError(), is(false));
+    assertThat(original.getValue(), is("Space Cookies!"));
+
+    assertThat(transformed.isError(), is(false));
+    assertThat(transformed.getValue(), is("Space Cookies!"));
   }
 }

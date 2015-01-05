@@ -24,10 +24,11 @@
 package com.fatboyindustrial.omnium;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import javax.annotation.concurrent.ThreadSafe;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Represents either a valid value, or an error condition.
@@ -72,7 +73,7 @@ public class Either<VALUE, ERROR>
    */
   public static <VALUE, ERROR> Either<VALUE, ERROR> value(VALUE value)
   {
-    return new Either<>(Optional.of(value), Optional.<ERROR>absent());
+    return new Either<>(Optional.of(value), Optional.<ERROR>empty());
   }
 
   /**
@@ -84,7 +85,7 @@ public class Either<VALUE, ERROR>
    */
   public static <VALUE, ERROR> Either<VALUE, ERROR> error(ERROR error)
   {
-    return new Either<>(Optional.<VALUE>absent(), Optional.of(error));
+    return new Either<>(Optional.<VALUE>empty(), Optional.of(error));
   }
 
   /**
@@ -124,5 +125,29 @@ public class Either<VALUE, ERROR>
     }
 
     return this.error.get();
+  }
+
+  /**
+   * If the value is present, then apply the provided mapping function to it, returning the result
+   * as a new {@code Either}.
+   * @param function The mapping function.
+   * @param <NEW_VALUE> The type of the new value.
+   * @return A new {@code Either}.
+   */
+  public <NEW_VALUE> Either<NEW_VALUE, ERROR> mapValue(final Function<VALUE, NEW_VALUE> function)
+  {
+    return new Either<>(this.value.map(function), this.error);
+  }
+
+  /**
+   * If the error is present, then apply the provided mapping function to it, returning the result
+   * as a new {@code Either}.
+   * @param function The mapping function.
+   * @param <NEW_ERROR> The type of the new error.
+   * @return A new {@code Either}.
+   */
+  public <NEW_ERROR> Either<VALUE, NEW_ERROR> mapError(final Function<ERROR, NEW_ERROR> function)
+  {
+    return new Either<>(this.value, this.error.map(function));
   }
 }
