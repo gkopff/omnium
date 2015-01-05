@@ -23,10 +23,11 @@
 
 package com.fatboyindustrial.omnium.thread;
 
-import com.google.common.base.Optional;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -56,7 +57,7 @@ public class PerpetualThreadTest
   {
     final Optional<String> result = PerpetualThread.PerpetualThreadRegistry.get().getNotice();
 
-    assertThat(result, is(Optional.<String>absent()));
+    assertThat(result, is(Optional.<String>empty()));
   }
 
   /**
