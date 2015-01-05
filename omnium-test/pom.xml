@@ -28,7 +28,7 @@
   <parent>
     <artifactId>omnium</artifactId>
     <groupId>com.fatboyindustrial.omnium</groupId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.3.0</version>
   </parent>
 
   <artifactId>omnium-test</artifactId>
