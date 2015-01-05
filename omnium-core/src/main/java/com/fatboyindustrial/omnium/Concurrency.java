@@ -48,6 +48,7 @@ public class Concurrency
    * }</pre>
    * @param pool The thread pool to execute in.
    * @param block The block to execute.
+   * @param <R> The type returned by {@code block}.
    * @return The value returned by {@code block}.
    */
   @SuppressWarnings("JavaDoc")    // JavaDoc is valid
