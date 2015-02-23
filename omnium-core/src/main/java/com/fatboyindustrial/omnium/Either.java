@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Greg Kopff
+ * Copyright 2015 Greg Kopff
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,131 +23,382 @@
 
 package com.fatboyindustrial.omnium;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
-import javax.annotation.concurrent.ThreadSafe;
-import java.util.Optional;
+import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Represents either a valid value, or an error condition.
- *
- * @param <VALUE> The valid object.
- * @param <ERROR> The error object.
+ * Represents a value of one of two possible types (a disjoint union).  Convention dictates that
+ * <i>left</i> is used for failure and <i>right</i> is used for success.
+ * @param <L> The left value type.
+ * @param <R> The right value type.
  */
-@ThreadSafe
-public class Either<VALUE, ERROR>
+public abstract class Either<L, R>
 {
-  /** The valid object. */
-  private final Optional<VALUE> value;
-
-  /** The error object. */
-  private final Optional<ERROR> error;
+  /**
+   * Does this either hold a left value?
+   * @return True if this object stores a left value, false otherwise.
+   */
+  public abstract boolean isLeft();
 
   /**
-   * Constructor.
-   * @param value The valid object, or absent if an error is present.
-   * @param error The error object, or absent if a valid object is present.
-   * @throws IllegalArgumentException If both are present or both are absent.
+   * Does this either hold a right value?
+   * @return True if this object stores a right value, false otherwise.
    */
-  @VisibleForTesting
-  protected Either(Optional<VALUE> value, Optional<ERROR> error) throws IllegalArgumentException
+  public final boolean isRight()
   {
-    this.value = Preconditions.checkNotNull(value, "value cannot be null");
-    this.error = Preconditions.checkNotNull(error, "error cannot be null");
-
-    Preconditions.checkArgument(! (this.value.isPresent() && this.error.isPresent()),
-                                "Both value and error cannot be present");
-
-    Preconditions.checkArgument(! (! this.value.isPresent() && ! this.error.isPresent()),
-                                "Both value and error cannot be absent");
+    return ! isLeft();
   }
 
   /**
-   * Creates an object that contains a valid value.
-   * @param value The valid value.
-   * @param <VALUE> The type of the value.
-   * @param <ERROR> The type of the error.
-   * @return The object.
+   * Gets the left value, raising an exception if this is a right value.
+   * @return The left value.
+   * @throws NoSuchElementException If this is a right value.
    */
-  public static <VALUE, ERROR> Either<VALUE, ERROR> value(VALUE value)
+  public abstract L left() throws NoSuchElementException;
+
+  /**
+   * Gets the right value, raising an exception if this is a left value.
+   * @return The right value.
+   * @throws NoSuchElementException If this is a left value.
+   */
+  public abstract R right() throws NoSuchElementException;
+
+  /**
+   * Applies the given function to the left value if there is one, or performs no operation if
+   * this is a right value.
+   * @param function The function to apply.
+   * @param <M> The new left value type.
+   * @return The resulting {@code Either}.
+   */
+  public abstract <M> Either<M, R> mapLeft(final Function<L, M> function);
+
+  /**
+   * Applies the given function to the right value if there is one, or performs no operation if
+   * this is a left value.
+   * @param function The function to apply.
+   * @param <M> The new right value type.
+   * @return The resulting {@code Either}.
+   */
+  public abstract <M> Either<L, M> mapRight(final Function<R, M> function);
+
+  /**
+   * Copies this {@code Either}'s left value and returns a new either with it.  The type of the right value
+   * is inferred by the compiler.
+   * @param <T> The type of the right value.
+   * @return The resulting {@code Either}.
+   * @throws NoSuchElementException If this is not a left value.
+   */
+  public <T> Either<L, T> copyLeft() throws NoSuchElementException
   {
-    return new Either<>(Optional.of(value), Optional.<ERROR>empty());
+    return Either.left(left());
   }
 
   /**
-   * Creates an object that contains an error.
-   * @param error The error.
-   * @param <VALUE> The type of the value.
-   * @param <ERROR> The type of the error.
-   * @return The object.
+   * Copies this {@code Either}'s left value and returns a new either with it.  The type of the right value
+   * is inferred by the compiler.
+   * @param <T> The type of the right value.
+   * @return The resulting {@code Either}.
+   * @throws NoSuchElementException If this is not a right value.
    */
-  public static <VALUE, ERROR> Either<VALUE, ERROR> error(ERROR error)
+  public <T> Either<T, R> copyRight() throws NoSuchElementException
   {
-    return new Either<>(Optional.<VALUE>empty(), Optional.of(error));
+    return Either.right(right());
   }
 
   /**
-   * Is an error set?
-   * @return True if there is an error, or false if there is a valid value.
+   * Executes the given code block if this is a left value, or does nothing if this is a right value.
+   * @param block The code block to execute.
    */
-  public boolean isError()
+  public abstract void ifLeft(final Consumer<L> block);
+
+  /**
+   * Executes the given code block if this is a right value, or does nothing if this is a right value.
+   * @param block The code block to execute.
+   */
+  public abstract void ifRight(final Consumer<R> block);
+
+  /**
+   * Gets a left value.
+   * @param left The value to store.
+   * @param <L> The type of the left value.
+   * @param <R> The type of the right value.
+   * @return The {@code Either}.
+   */
+  public static <L, R> Either<L, R> left(L left)
   {
-    return this.error.isPresent();
+    Preconditions.checkNotNull(left, "left cannot be null");
+    return new Left<>(left);
   }
 
   /**
-   * Gets the valid value.
-   * @return The value.
-   * @throws IllegalStateException If a valid value is not present.
+   * Gets a right value.
+   * @param right The value to store.
+   * @param <L> The type of the left value.
+   * @param <R> The type of the right value.
+   * @return The {@code Either}.
    */
-  public VALUE getValue() throws IllegalStateException
+  public static <L, R> Either<L, R> right(R right)
   {
-    if (! this.value.isPresent())
+    Preconditions.checkNotNull(right, "right cannot be null");
+    return new Right<>(right);
+  }
+
+  /**
+   * Private constructor.
+   */
+  private Either()
+  {
+    ;
+  }
+
+  /**
+   * Left value implementation.
+   * @param <L> The left value type.
+   * @param <R> The right value type.
+   */
+  private static class Left<L, R> extends Either<L, R>
+  {
+    /** Left value storage. */
+    private final L left;
+
+    /**
+     * Private constructor.
+     * @param left The left value.
+     */
+    private Left(final L left)
     {
-      throw new IllegalStateException("value is not present");
+      this.left = left;
     }
 
-    return this.value.get();
-  }
-
-  /**
-   * Gets the error value.
-   * @return The error.
-   * @throws IllegalStateException If an error is not present.
-   */
-  public ERROR getError() throws IllegalStateException
-  {
-    if (! this.error.isPresent())
+    /**
+     * Does this either hold a left value?
+     * @return Always true.
+     */
+    @Override
+    public boolean isLeft()
     {
-      throw new IllegalStateException("error is not present");
+      return true;
     }
 
-    return this.error.get();
+    /**
+     * Gets the left value.
+     * @return The left value.
+     */
+    @Override
+    public L left()
+    {
+      return this.left;
+    }
+
+    /**
+     * Gets the right value, raising an exception if this is a left value.
+     * @return The right value.
+     * @throws NoSuchElementException Always.
+     */
+    @Override
+    public R right() throws NoSuchElementException
+    {
+      throw new NoSuchElementException();
+    }
+
+    /**
+     * Applies the given function to the left value if there is one, or performs no operation if
+     * this is a right value.
+     * @param function The function to apply.
+     * @param <M> The new left value type.
+     * @return The resulting {@code Either}.
+     */
+    @Override
+    public <M> Either<M, R> mapLeft(final Function<L, M> function)
+    {
+      return new Left<>(function.apply(this.left));
+    }
+
+    /**
+     * Applies the given function to the right value if there is one, or performs no operation if
+     * this is a left value.
+     * @param function The function to apply.
+     * @param <M> The new right value type.
+     * @return The resulting {@code Either}.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public <M> Either<L, M> mapRight(final Function<R, M> function)
+    {
+      return (Either<L, M>) this;
+    }
+
+    /**
+     * Executes the given code block.
+     * @param block The code block to execute.
+     */
+    @Override
+    public void ifLeft(final Consumer<L> block)
+    {
+      block.accept(this.left);
+    }
+
+    /**
+     * Does nothing - this is a left value.
+     * @param block Ignored.
+     */
+    @Override
+    public void ifRight(final Consumer<R> block)
+    {
+      ;
+    }
+
+    /**
+     * Compares this value with another for equality.
+     * @param obj The other object.
+     * @return True if the other object is a left value and the underlying values are equal.
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (obj instanceof Left<?, ?>)
+      {
+        final Left<?, ?> other = (Left<?, ?>) obj;
+        return this.left.equals(other.left);
+      }
+      return false;
+    }
+
+    /**
+     * Generates a hash code.
+     * @return The hash code.
+     */
+    @Override
+    public int hashCode()
+    {
+      return 17 * this.left.hashCode();
+    }
   }
 
   /**
-   * If the value is present, then apply the provided mapping function to it, returning the result
-   * as a new {@code Either}.
-   * @param function The mapping function.
-   * @param <NEW_VALUE> The type of the new value.
-   * @return A new {@code Either}.
+   * Right value implementation.
+   * @param <L> The left value type.
+   * @param <R> The right value type.
    */
-  public <NEW_VALUE> Either<NEW_VALUE, ERROR> mapValue(final Function<VALUE, NEW_VALUE> function)
+  private static class Right<L, R> extends Either<L, R>
   {
-    return new Either<>(this.value.map(function), this.error);
-  }
+    /** Right value storage. */
+    private final R right;
 
-  /**
-   * If the error is present, then apply the provided mapping function to it, returning the result
-   * as a new {@code Either}.
-   * @param function The mapping function.
-   * @param <NEW_ERROR> The type of the new error.
-   * @return A new {@code Either}.
-   */
-  public <NEW_ERROR> Either<VALUE, NEW_ERROR> mapError(final Function<ERROR, NEW_ERROR> function)
-  {
-    return new Either<>(this.value, this.error.map(function));
+    /**
+     * Private constructor.
+     * @param right The right value.
+     */
+    private Right(final R right)
+    {
+      this.right = right;
+    }
+
+    /**
+     * Does this either hold a left value?
+     * @return Always false.
+     */
+    @Override
+    public boolean isLeft()
+    {
+      return false;
+    }
+
+    /**
+     * Gets the left value, raising an exception if this is a left value.
+     * @return The left value.
+     * @throws NoSuchElementException Always.
+     */
+    @Override
+    public L left() throws NoSuchElementException
+    {
+      throw new NoSuchElementException();
+    }
+
+    /**
+     * Gets the right value.
+     * @return The right value.
+     */
+    @Override
+    public R right()
+    {
+      return this.right;
+    }
+
+    /**
+     * Applies the given function to the left value if there is one, or performs no operation if
+     * this is a right value.
+     * @param function The function to apply.
+     * @param <M> The new left value type.
+     * @return The resulting {@code Either}.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public <M> Either<M, R> mapLeft(final Function<L, M> function)
+    {
+      return (Either<M, R>) this;
+    }
+
+    /**
+     * Applies the given function to the right value if there is one, or performs no operation if
+     * this is a left value.
+     * @param function The function to apply.
+     * @param <M> The new right value type.
+     * @return The resulting {@code Either}.
+     */
+    @Override
+    public <M> Either<L, M> mapRight(final Function<R, M> function)
+    {
+      return new Right<>(function.apply(this.right));
+    }
+
+    /**
+     * Does nothing - this is a right value.
+     * @param block Ignored.
+     */
+    @Override
+    public void ifLeft(final Consumer<L> block)
+    {
+      ;
+    }
+
+    /**
+     * Executes the given code block.
+     * @param block The code block to execute.
+     */
+    @Override
+    public void ifRight(final Consumer<R> block)
+    {
+      block.accept(this.right);
+    }
+
+    /**
+     * Compares this value with another for equality.
+     * @param obj The other object.
+     * @return True if the other object is a right value and the underlying values are equal.
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (obj instanceof Right<?, ?>)
+      {
+        final Right<?, ?> other = (Right<?, ?>) obj;
+        return this.right.equals(other.right);
+      }
+      return false;
+    }
+
+    /**
+     * Generates a hash code.
+     * @return The hash code.
+     */
+    @Override
+    public int hashCode()
+    {
+      return 31 * this.right.hashCode();
+    }
   }
 }
