@@ -25,6 +25,10 @@ package com.fatboyindustrial.omnium;
 
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -304,5 +308,34 @@ public class EitherTest
 
     assertThat(r1.equals(null), is(false));
     assertThat(r1.equals(""), is(false));
+  }
+
+  /**
+   * Tests that serialisation and deserialisation works.
+   */
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testSerialisation() throws Exception
+  {
+    final Either<String, Integer> originalLeft = Either.left("Space Cookies!");
+    final Either<String, Integer> originalRight = Either.right(42);
+
+    final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    final ObjectOutputStream oos = new ObjectOutputStream(byteArrayOutputStream);
+
+    oos.writeObject(originalLeft);
+    oos.writeObject(originalRight);
+    oos.close();
+
+    final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+    final ObjectInputStream ois = new ObjectInputStream(byteArrayInputStream);
+
+    final Either<String, Integer> reconstitutedLeft = (Either<String, Integer>) ois.readObject();
+    final Either<String, Integer> reconstitutedRight = (Either<String, Integer>) ois.readObject();
+
+    ois.close();
+
+    assertThat(originalLeft, is(reconstitutedLeft));
+    assertThat(originalRight, is(reconstitutedRight));
   }
 }

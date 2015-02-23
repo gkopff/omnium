@@ -25,6 +25,7 @@ package com.fatboyindustrial.omnium;
 
 import com.google.common.base.Preconditions;
 
+import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -35,8 +36,10 @@ import java.util.function.Function;
  * @param <L> The left value type.
  * @param <R> The right value type.
  */
-public abstract class Either<L, R>
+public abstract class Either<L, R> implements Serializable
 {
+  private static final long serialVersionUID = 1L;
+
   /**
    * Does this either hold a left value?
    * @return True if this object stores a left value, false otherwise.
@@ -161,6 +164,8 @@ public abstract class Either<L, R>
    */
   private static class Left<L, R> extends Either<L, R>
   {
+    private static final long serialVersionUID = 1L;
+
     /** Left value storage. */
     private final L left;
 
@@ -285,6 +290,8 @@ public abstract class Either<L, R>
    */
   private static class Right<L, R> extends Either<L, R>
   {
+    private static final long serialVersionUID = 1L;
+
     /** Right value storage. */
     private final R right;
 
